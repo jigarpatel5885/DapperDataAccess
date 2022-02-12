@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -22,5 +23,7 @@ namespace DataAccess.Interface
         Task<IEnumerable<T>> ExecuteStoredProcedureQueryAsync<T>(string procedureName, Dictionary<string, object> parameters) where T : class;
 
         Task<T> ExecuteQueryFirstOrDefaultAsync<T>(string sql, Dictionary<string, object> parameters) where T : class;
+
+        Task<Dictionary<string, object>> ExecuteStoredProcedureWithOutPutParameters(string procedureName, DynamicParameters parameters, List<string> outputParameters);
     }
 }

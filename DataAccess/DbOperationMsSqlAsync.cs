@@ -158,5 +158,35 @@ namespace DataAccess
 
             return result;
         }
+
+        public async Task< Dictionary<string, object>> ExecuteStoredProcedureWithOutPutParameters(string procedureName, DynamicParameters parameters, List<string> outputParameters)
+        {
+            var affectedRows = 0;
+            var returnParameters = new Dictionary<string, object>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                if (parameters != null)
+                {
+                    affectedRows = await connection.ExecuteAsync(procedureName, _parameters, commandType: CommandType.StoredProcedure);
+
+                }
+                else
+                {
+                    affectedRows = await connection.ExecuteAsync(procedureName, commandType: CommandType.StoredProcedure);
+                }
+
+                foreach (var item in _parameters.ParameterNames)
+                {
+                    if (outputParameters.Contains(item))
+                    {
+                        returnParameters.Add(item.ToString(), _parameters.Get<dynamic>(item.ToString()));
+                    }
+
+                }
+            }
+
+            return returnParameters;
+        }
     }
 }

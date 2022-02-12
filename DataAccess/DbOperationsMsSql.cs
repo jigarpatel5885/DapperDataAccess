@@ -196,6 +196,7 @@ namespace DataAccess
         public T ExecuteQueryFirstOrDefault<T>(string sql, Dictionary<string, object> parameters) where T : class
         {
             T result;
+            _parameters = new DynamicParameters(parameters);
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -212,6 +213,37 @@ namespace DataAccess
             return result;
         }
 
+        public Dictionary<string,object> ExecuteStoredProcedureWithOutPutParameters(string procedureName,DynamicParameters parameters ,List<string> outputParameters)
+        {
+            var affectedRows = 0;
+            var returnParameters = new Dictionary<string, object>();
+            
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                if (parameters!=null)    
+                {
+                    affectedRows = connection.Execute(procedureName, _parameters, commandType: CommandType.StoredProcedure);
+
+                }
+                else
+                {
+                    affectedRows = connection.Execute(procedureName, commandType: CommandType.StoredProcedure);
+                }
+
+                foreach (var item in _parameters.ParameterNames)
+                {
+                    if(outputParameters.Contains(item))
+                    {
+                        returnParameters.Add(item.ToString(), _parameters.Get<dynamic>(item.ToString()));
+                    }
+                    
+                }
+            }
+
+            return returnParameters;
+        }
+        
+       
 
     }
 }

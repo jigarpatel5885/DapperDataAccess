@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace DataAccess.Interface
 
 
         T ExecuteQueryFirstOrDefault<T>(string sql, Dictionary<string, object> parameters) where T : class;
+
+        Dictionary<string, object> ExecuteStoredProcedureWithOutPutParameters(string procedureName, DynamicParameters parameters, List<string> outputParameters);
 
 
     }
