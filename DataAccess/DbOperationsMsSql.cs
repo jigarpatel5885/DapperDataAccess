@@ -25,21 +25,16 @@ namespace DataAccess
         /// <param name="sql"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public int ExecuteQuery(string sql, Dictionary<string, object> parameters)
+        public int ExecuteQuery(string sql, DynamicParameters parameters)
         {
             int affectedRows = 0;
             _parameters = new DynamicParameters(parameters);
             using (var connection = new SqlConnection(_connectionString))
             {
-                if(parameters.Count >0)
-                {
+                
                     affectedRows = connection.Execute(sql,_parameters);
                     
-                }
-                else
-                {
-                    affectedRows = connection.Execute(sql);
-                }               
+                               
             }
 
             return affectedRows;
@@ -52,23 +47,17 @@ namespace DataAccess
         /// <param name="sql"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public DataTable ExecuteReader(string sql, Dictionary<string, object> parameters)
+        public DataTable ExecuteReader(string sql, DynamicParameters parameters)
         {
             var dataTable = new DataTable();
             IDataReader reader = null;
             _parameters = new DynamicParameters(parameters);
             using (var connection = new SqlConnection(_connectionString))
             {
-                if (parameters.Count > 0)
-                {
+               
                      reader = connection.ExecuteReader(sql, _parameters);
 
-                }
-                else
-                {
-                    reader = connection.ExecuteReader(sql);
-                }
-                dataTable.Load(reader);
+                               dataTable.Load(reader);
             }
 
             return dataTable;
@@ -82,20 +71,15 @@ namespace DataAccess
         /// <param name="sql"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public T ExecuteScalar<T>(string sql, Dictionary<string, object> parameters)
+        public T ExecuteScalar<T>(string sql, DynamicParameters parameters)
         {
             T result  ;
 
             using(var connection = new SqlConnection(_connectionString))
             {
-                if (parameters.Count > 0)
-                {
+                
                     result = connection.ExecuteScalar<T>(sql, _parameters);
-                }
-                else
-                {
-                    result = connection.ExecuteScalar<T>(sql);
-                }
+                
             }
 
             return result;
@@ -108,22 +92,17 @@ namespace DataAccess
         /// <param name="procedureName"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public int ExecuteStoredProcedure(string procedureName, Dictionary<string, object> parameters)
+        public int ExecuteStoredProcedure(string procedureName, DynamicParameters parameters)
         {
             var affectedRows = 0;
 
             _parameters = new DynamicParameters(parameters);
             using (var connection = new SqlConnection(_connectionString))
             {
-                if (parameters.Count > 0)
-                {
+                
                     affectedRows = connection.Execute(procedureName, _parameters,commandType : CommandType.StoredProcedure);
 
-                }
-                else
-                {
-                    affectedRows = connection.Execute(procedureName,commandType:CommandType.StoredProcedure);
-                }
+                
             }
 
             return affectedRows;
@@ -137,22 +116,16 @@ namespace DataAccess
         /// <param name="procedureName"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public IEnumerable<T> ExecuteStoredProcedureQuery<T>(string procedureName,Dictionary<string,object> parameters) where T : class
+        public IEnumerable<T> ExecuteStoredProcedureQuery<T>(string procedureName,DynamicParameters parameters) where T : class
         {
             IEnumerable<T> result ;
 
             _parameters = new DynamicParameters(parameters);
             using (var connection = new SqlConnection(_connectionString))
             {
-                if (parameters.Count > 0)
-                {
+               
                     result = connection.Query<T>(procedureName, _parameters, commandType: CommandType.StoredProcedure);
 
-                }
-                else
-                {
-                    result = connection.Query<T>(procedureName, commandType: CommandType.StoredProcedure);
-                }
             }
 
             return result;
@@ -166,21 +139,15 @@ namespace DataAccess
         /// <param name="sql"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public IEnumerable<T> ExecuteQuery<T>(string sql, Dictionary<string, object> parameters) where T : class
+        public IEnumerable<T> ExecuteQuery<T>(string sql, DynamicParameters parameters) where T : class
         {
             IEnumerable<T> result;
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                if (parameters.Count > 0)
-                {
+               
                     result = connection.Query<T>(sql, _parameters);
 
-                }
-                else
-                {
-                    result = connection.Query<T>(sql);
-                }
             }
             return result;
         }
@@ -193,22 +160,17 @@ namespace DataAccess
         /// <param name="sql"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public T ExecuteQueryFirstOrDefault<T>(string sql, Dictionary<string, object> parameters) where T : class
+        public T ExecuteQueryFirstOrDefault<T>(string sql, DynamicParameters parameters) where T : class
         {
             T result;
             _parameters = new DynamicParameters(parameters);
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                if (parameters.Count > 0)
-                {
+               
                     result = connection.QueryFirstOrDefault<T>(sql, _parameters);
 
-                }
-                else
-                {
-                    result = connection.QueryFirstOrDefault<T>(sql);
-                }
+               
             }
             return result;
         }
@@ -242,8 +204,7 @@ namespace DataAccess
 
             return returnParameters;
         }
-        
-       
 
+        
     }
 }
